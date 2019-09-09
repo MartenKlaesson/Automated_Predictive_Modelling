@@ -1,0 +1,47 @@
+clear all;
+close all;
+
+%Initial parameters
+A1=[1  0.5;0.5 1]; 
+A2=[1  -0.5;-0.5 1];
+m1=[-10,-10]'; 
+m2=[10,10]';
+B = 0.05;
+A = zeros(1,1000);
+JJ = zeros(1,1000);
+G = zeros(1,2)';
+X = [8,6]';
+G(:,1) = JGrad(X,m1,m2,A1,A2);
+% The first two errors calculated.
+JJ(1) = J(X,m1,m2,A1,A2);
+A(1) = 0.001*(norm(X)/norm(G));
+X = X - A(1)*G(:,1);
+JJ(2) = J(X,m1,m2,A1,A2);
+t = (1:125)
+R = 2;
+while norm(G) > 10e-5
+       
+    
+    if JJ(R) > JJ(R-1) 
+        A(R-1) = (1-B)*A(R-1);
+        X = X - A(R-1)*G(:,1);
+        JJ(R) = J(X,m1,m2,A1,A2);
+        
+   
+    
+  
+    else 
+        A(R) = (1+B)*A(R-1);
+G(:,1) = JGrad(X,m1,m2,A1,A2);
+X = X - A(R-1)*G(:,1)
+JJ(R) = J(X,m1,m2,A1,A2);
+R = R+1
+    end
+    
+  
+
+    
+
+end
+subplot(2,1,1), plot(t,JJ(1:125))
+subplot(2,1,2), plot(t,A(1:125))
